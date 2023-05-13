@@ -36,7 +36,7 @@ export default function Users({ users }) {
               <Td>{user.lastName}</Td>
               <Td>{user.company}</Td>
               <Td>{user.email}</Td>
-              <Td>{<TableActions />}</Td>
+              <Td>{<TableActions onEdit={onOpen} />}</Td>
             </Tr>
           ))}
         </Tbody>
