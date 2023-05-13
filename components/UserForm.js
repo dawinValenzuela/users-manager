@@ -12,6 +12,7 @@ import {
   Input,
   VStack,
   FormErrorMessage,
+  useToast,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 
@@ -22,7 +23,38 @@ function UserForm({ isOpen, onClose }) {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => console.log(data);
+  const toast = useToast();
+
+  const onSubmit = async (data) => {
+    // TODO: Add user to database
+    try {
+      const response = await fetch(
+        'http://localhost:3000/api/admin_list_active_users',
+        {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      toast({
+        title: 'User created.',
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: `Something went wrong`,
+        status: 'error',
+        isClosable: true,
+      });
+    }
+
+    onClose();
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
