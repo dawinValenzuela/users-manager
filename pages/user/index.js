@@ -7,31 +7,42 @@ import {
   Th,
   Td,
   TableCaption,
+  useDisclosure,
 } from '@chakra-ui/react';
+import CreateUserButton from '@src/components/CreateUserButton';
+import TableActions from '@src/components/TableActions';
+import UserForm from '@src/components/UserForm';
 
 export default function Users({ users }) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
-    <Table variant='striped' colorScheme='teal'>
-      <TableCaption>Active Users</TableCaption>
-      <Thead>
-        <Tr>
-          <Th>Nombre</Th>
-          <Th>Apellido</Th>
-          <Th>Empresa</Th>
-          <Th>Email</Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-        {users?.map((user) => (
-          <Tr key={user.id}>
-            <Td>{user.name}</Td>
-            <Td>{user.lastName}</Td>
-            <Td>{user.company}</Td>
-            <Td>{user.email}</Td>
+    <>
+      <CreateUserButton onClick={onOpen} />
+      <Table variant='striped' colorScheme='teal'>
+        <TableCaption>Active Users</TableCaption>
+        <Thead>
+          <Tr>
+            <Th>Nombre</Th>
+            <Th>Apellido</Th>
+            <Th>Empresa</Th>
+            <Th>Email</Th>
+            <Th />
           </Tr>
-        ))}
-      </Tbody>
-    </Table>
+        </Thead>
+        <Tbody>
+          {users?.map((user) => (
+            <Tr key={user.id}>
+              <Td>{user.name}</Td>
+              <Td>{user.lastName}</Td>
+              <Td>{user.company}</Td>
+              <Td>{user.email}</Td>
+              <Td>{<TableActions />}</Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+      <UserForm isOpen={isOpen} onClose={onClose} />
+    </>
   );
 }
 
