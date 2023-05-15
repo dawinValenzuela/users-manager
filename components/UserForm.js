@@ -15,52 +15,64 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
+import useUser from '@src/hooks/useUser';
+import { useEffect } from 'react';
+import { useState } from 'react';
+
+const DEFAULT_VALUES = {
+  name: '',
+  lastName: '',
+  email: '',
+  company: '',
+};
+
+const DEFAULT_TITLE = 'Create user';
 
 function UserForm({ isOpen, onClose }) {
+  const [modalTitle, setModalTitle] = useState(DEFAULT_TITLE);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+    reset,
+  } = useForm({
+    defaultValues: DEFAULT_VALUES,
+  });
+
+  const { createUser, user, clearUser, editUser } = useUser();
+
+  useEffect(() => {
+    if (user) {
+      reset(user);
+      setModalTitle('Edit user');
+    } else {
+      setModalTitle(DEFAULT_TITLE);
+      reset(DEFAULT_VALUES);
+    }
+  }, [user, reset]);
 
   const toast = useToast();
 
-  const onSubmit = async (data) => {
-    // TODO: Add user to database
-    try {
-      const response = await fetch(
-        'http://localhost:3000/api/admin_list_active_users',
-        {
-          method: 'POST',
-          body: JSON.stringify(data),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      toast({
-        title: 'User created.',
-        status: 'success',
-        duration: 9000,
-        isClosable: true,
-      });
-    } catch (error) {
-      toast({
-        title: `Something went wrong`,
-        status: 'error',
-        isClosable: true,
-      });
+  const onSubmit = (data) => {
+    if (user?.id) {
+      editUser(data, user.id);
+    } else {
+      createUser(data);
     }
+    reset(DEFAULT_VALUES);
+    onClose();
+  };
 
+  const handleCloseModal = () => {
+    clearUser();
     onClose();
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={handleCloseModal}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Modal Title</ModalHeader>
+        <ModalHeader>{modalTitle}</ModalHeader>
         <ModalCloseButton />
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalBody>
@@ -119,7 +131,7 @@ function UserForm({ isOpen, onClose }) {
             <Button colorScheme='blue' mr={3} type='submit'>
               Save
             </Button>
-            <Button variant='outline' onClick={onClose}>
+            <Button variant='outline' onClick={handleCloseModal}>
               Cancel
             </Button>
           </ModalFooter>

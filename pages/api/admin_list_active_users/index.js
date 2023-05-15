@@ -1,7 +1,7 @@
 import admin from 'firebase-admin';
 
 if (!admin.apps.length) {
-  const serviceAccount = require('../../admin-keys.json');
+  const serviceAccount = require('../../../admin-keys.json');
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
   });
@@ -34,15 +34,6 @@ export default async function handler(req, res) {
         res.status(201).json({ message: 'User added successfully.' });
       } catch (error) {
         res.status(500).json({ message: 'Error adding user.' });
-      }
-      break;
-    case 'PUT':
-      try {
-        const { id, name, age } = body;
-        await db.collection('users').doc(id).update({ name, age });
-        res.status(200).json({ message: 'User updated successfully.' });
-      } catch (error) {
-        res.status(500).json({ message: 'Error updating user.' });
       }
       break;
     default:
