@@ -8,7 +8,8 @@ import {
   Td,
   TableCaption,
   useDisclosure,
-  useToast,
+  Spinner,
+  Flex,
 } from '@chakra-ui/react';
 import CreateUserButton from '@src/components/CreateUserButton';
 import TableActions from '@src/components/TableActions';
@@ -18,7 +19,7 @@ import { useState } from 'react';
 import useUser from '@src/hooks/useUser';
 
 export default function Users() {
-  const { users, deleteUser, getUser, userToEdit } = useUser();
+  const { users, handleDeleteUser, getUser, userToEdit, isLoading } = useUser();
   const [selectedUser, setSelectedUser] = useState();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -29,7 +30,7 @@ export default function Users() {
   } = useDisclosure();
 
   const handleDelete = () => {
-    deleteUser(selectedUser);
+    handleDeleteUser(selectedUser);
     onCloseAlert();
   };
 
@@ -46,38 +47,51 @@ export default function Users() {
   return (
     <>
       <CreateUserButton onClick={onOpen} />
-      <Table variant='striped' colorScheme='teal'>
-        <TableCaption>Active Users</TableCaption>
-        <Thead>
-          <Tr>
-            <Th>#</Th>
-            <Th>Nombre</Th>
-            <Th>Apellido</Th>
-            <Th>Empresa</Th>
-            <Th>Email</Th>
-            <Th />
-          </Tr>
-        </Thead>
-        <Tbody>
-          {users?.map((user, key) => (
-            <Tr key={user.id}>
-              <Td>{key + 1}</Td>
-              <Td>{user.name}</Td>
-              <Td>{user.lastName}</Td>
-              <Td>{user.company}</Td>
-              <Td>{user.email}</Td>
-              <Td>
-                {
-                  <TableActions
-                    onEdit={() => handleOpenEditModal(user.id)}
-                    onDelete={() => handleOpenAlert(user.id)}
-                  />
-                }
-              </Td>
+      {isLoading ? (
+        <Flex width='full' justifyContent='center'>
+          <Spinner
+            thickness='4px'
+            speed='0.65s'
+            emptyColor='gray.200'
+            color='blue.500'
+            size='xl'
+          />
+        </Flex>
+      ) : (
+        <Table variant='striped' colorScheme='teal'>
+          <TableCaption>Active Users</TableCaption>
+          <Thead>
+            <Tr>
+              <Th>#</Th>
+              <Th>Nombre</Th>
+              <Th>Apellido</Th>
+              <Th>Empresa</Th>
+              <Th>Email</Th>
+              <Th />
             </Tr>
-          ))}
-        </Tbody>
-      </Table>
+          </Thead>
+          <Tbody>
+            {users?.map((user, key) => (
+              <Tr key={user.id}>
+                <Td>{key + 1}</Td>
+                <Td>{user.name}</Td>
+                <Td>{user.lastName}</Td>
+                <Td>{user.company}</Td>
+                <Td>{user.email}</Td>
+                <Td>
+                  {
+                    <TableActions
+                      onEdit={() => handleOpenEditModal(user.id)}
+                      onDelete={() => handleOpenAlert(user.id)}
+                    />
+                  }
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      )}
+
       <UserForm isOpen={isOpen} onClose={onClose} user={userToEdit} />
       <Alert
         isOpen={isAlertOpen}

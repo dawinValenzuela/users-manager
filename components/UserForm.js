@@ -39,7 +39,7 @@ function UserForm({ isOpen, onClose }) {
     defaultValues: DEFAULT_VALUES,
   });
 
-  const { createUser, user, clearUser, editUser } = useUser();
+  const { handleCreateUser, user, clearUser, editUser } = useUser();
 
   useEffect(() => {
     if (user) {
@@ -57,7 +57,7 @@ function UserForm({ isOpen, onClose }) {
     if (user?.id) {
       editUser(data, user.id);
     } else {
-      createUser(data);
+      handleCreateUser(data);
     }
     reset(DEFAULT_VALUES);
     onClose();

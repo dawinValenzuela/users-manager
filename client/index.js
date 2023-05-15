@@ -12,7 +12,11 @@ export const deleteUserClient = async (userId) => {
     },
   });
 
-  return response;
+  if (!response.status === 200) {
+    return { message: 'Error deleting user.', status: 'error' };
+  }
+
+  return { message: 'User deleted successfully.', status: 'ok' };
 };
 
 export const createUserClient = async (data) => {
@@ -24,7 +28,11 @@ export const createUserClient = async (data) => {
     },
   });
 
-  return response;
+  if (!response.status === 201) {
+    return { message: 'Error creating user.', status: 'error' };
+  }
+
+  return { message: 'User created successfully.', status: 'ok' };
 };
 
 export const getUserClient = async (userId) => {

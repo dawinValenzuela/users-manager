@@ -28,12 +28,18 @@ export const UserProvider = ({ children }) => {
 
   const deleteUser = async (userId) => {
     const response = await deleteUserClient(userId);
-    getUsersList();
+
+    if (response.status === 'ok') {
+      getUsersList();
+    }
+
+    return response;
   };
 
   const createUser = async (data) => {
     const response = await createUserClient(data);
     getUsersList();
+    return response;
   };
 
   const editUser = async (data, userId) => {
@@ -50,13 +56,17 @@ export const UserProvider = ({ children }) => {
     dispatch({ type: CLEAR_USER });
   };
 
-  useEffect(() => {
-    getUsersList();
-  }, []);
-
   return (
     <UserContext.Provider
-      value={{ ...state, deleteUser, createUser, getUser, clearUser, editUser }}
+      value={{
+        ...state,
+        deleteUser,
+        createUser,
+        getUser,
+        clearUser,
+        editUser,
+        getUsersList,
+      }}
     >
       {children}
     </UserContext.Provider>
