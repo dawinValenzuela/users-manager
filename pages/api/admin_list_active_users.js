@@ -45,15 +45,6 @@ export default async function handler(req, res) {
         res.status(500).json({ message: 'Error updating user.' });
       }
       break;
-    case 'DELETE':
-      try {
-        const { id } = body;
-        await db.collection('users').doc(id).delete();
-        res.status(200).json({ message: 'User deleted successfully.' });
-      } catch (error) {
-        res.status(500).json({ message: 'Error deleting user.' });
-      }
-      break;
     default:
       res.status(405).end();
       break;
