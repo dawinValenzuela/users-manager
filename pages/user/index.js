@@ -17,6 +17,7 @@ import UserForm from '@src/components/UserForm';
 import Alert from '@src/components/Alert';
 import { useState } from 'react';
 import useUser from '@src/hooks/useUser';
+import { getSession } from 'next-auth/react';
 
 export default function Users() {
   const { users, handleDeleteUser, getUser, userToEdit, isLoading } = useUser();
@@ -100,4 +101,19 @@ export default function Users() {
       />
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const { req } = context;
+  const session = await getSession({ req });
+
+  if (!session) {
+    return {
+      redirect: { destination: '/login' },
+    };
+  }
+
+  return {
+    props: {},
+  };
 }
