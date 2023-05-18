@@ -10,6 +10,7 @@ export default function TableActions({ onEdit, onDelete }) {
         aria-label='Edit'
         icon={<EditIcon />}
         onClick={onEdit}
+        data-testid='edit-button'
       />
       <IconButton
         size='sm'
@@ -17,6 +18,7 @@ export default function TableActions({ onEdit, onDelete }) {
         aria-label='Delete'
         icon={<DeleteIcon />}
         onClick={onDelete}
+        data-testid='delete-button'
       />
     </HStack>
   );
